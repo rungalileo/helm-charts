@@ -40,14 +40,56 @@ spec:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
-          livenessProbe:
-            httpGet:
-              path: /
-              port: http
-          readinessProbe:
-            httpGet:
-              path: /
-              port: http
+          env:
+            - name: GALILEO_CONSOLE_URL
+              value: "https://console.local.rungalileo.io"
+            - name: GALILEO_HEADLESS_API_SVC_DNS
+              value: "api-hs.galileo.svc.cluster.local"
+            - name: GALILEO_RUNNERS_SVC_NAME
+              value: "runners-hs.galileo.svc.cluster.local"
+            - name: GALILEO_RUNNERS_SVC_PORT
+              value: "50052"
+            - name: GALILEO_API_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-secret
+                  key: GALILEO_API_SECRET_KEY
+            - name: GALILEO_DATABASE_URL_WRITE
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-superuser
+                  key: uri
+            - name: GALILEO_DATABASE_URL_READ
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-superuser
+                  key: uri
+            - name: GALILEO_MINIO_ENDPOINT_URL
+              value: "http://api-minio.galileo.svc.cluster.local:9000"
+            - name: GALILEO_MINIO_K8S_SVC_ADDR
+              value: "http://api-minio.galileo.svc.cluster.local:9000"
+            - name: GALILEO_MINIO_FQDN
+              value: "api-minio.galileo.svc.cluster.local:9000"
+            - name: GALILEO_MINIO_REGION
+              value: "us-east-1"
+            - name: GALILEO_MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-minio
+                  key: rootUser
+            - name: GALILEO_MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-minio
+                  key: rootPassword
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}

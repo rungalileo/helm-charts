@@ -5,12 +5,13 @@
 replicaCount: 1
 
 image:
-  repository: nginx
+  repository: gcr.io/rungalileo-dev/api
   pullPolicy: IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
-  tag: ""
+  tag: latest
 
-imagePullSecrets: []
+imagePullSecrets:
+  - name: galileo-docker-registry-secret
 nameOverride: ""
 fullnameOverride: ""
 
@@ -96,3 +97,52 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+# MinIO configuration: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
+minio:
+  replicas: 2 # 2 is the minimum
+  resources:
+  requests:
+    memory: 1Gi
+  buckets:
+    - name: galileo-auto-datasets
+      policy: none
+      purge: false
+      versioning: false
+      objectlocking: false
+    - name: galileo-images
+      policy: none
+      purge: false
+      versioning: false
+      objectlocking: false
+    - name: galileo-models
+      policy: none
+      purge: false
+      versioning: false
+      objectlocking: false
+    - name: galileo-project-runs
+      policy: none
+      purge: false
+      versioning: false
+      objectlocking: false
+    - name: galileo-project-runs-results
+      policy: none
+      purge: false
+      versioning: false
+      objectlocking: false
+    - name: galileo-prompts-datasets
+      policy: none
+      purge: false
+      versioning: false
+      objectlocking: false
+    - name: galileo-prompts-results
+      policy: none
+      purge: false
+      versioning: false
+      objectlocking: false
+
+postgres:
+  clusterName: "postgres"
+  instances: 2
+  primaryUpdateStrategy: "unsupervised"
+  storageSize: "1Gi"
