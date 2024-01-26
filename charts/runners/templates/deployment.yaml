@@ -1,0 +1,104 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "runners.fullname" . }}
+  labels:
+    {{- include "runners.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "runners.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "runners.labels" . | nindent 8 }}
+	{{- with .Values.podLabels }}
+        {{- toYaml . | nindent 8 }}
+        {{- end }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "runners.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.service.port }}
+              protocol: TCP
+          env:
+            - name: GALILEO_CONSOLE_URL
+              value: "https://console.local.rungalileo.io"
+            - name: GALILEO_HEADLESS_API_SVC_DNS
+              value: "api-hs.galileo.svc.cluster.local"
+            - name: GALILEO_RUNNERS_SVC_NAME
+              value: "runners-hs.galileo.svc.cluster.local"
+            - name: GALILEO_RUNNERS_SVC_PORT
+              value: "50052"
+            - name: GALILEO_API_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-secret
+                  key: GALILEO_API_SECRET_KEY
+            - name: GALILEO_MINIO_ENDPOINT_URL
+              value: "http://runners-minio.galileo.svc.cluster.local:9000"
+            - name: GALILEO_MINIO_K8S_SVC_ADDR
+              value: "http://runners-minio.galileo.svc.cluster.local:9000"
+            - name: GALILEO_MINIO_FQDN
+              value: "runners-minio.galileo.svc.cluster.local:9000"
+            - name: GALILEO_MINIO_REGION
+              value: "us-east-1"
+            - name: GALILEO_MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: runners-minio
+                  key: rootUser
+            - name: GALILEO_MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: runners-minio
+                  key: rootPassword
+          # livenessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+          {{- with .Values.volumeMounts }}
+          volumeMounts:
+            {{- toYaml . | nindent 12 }}
+          {{- end }}
+      {{- with .Values.volumes }}
+      volumes:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
