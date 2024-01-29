@@ -1,0 +1,14 @@
+apiVersion: postgresql.cnpg.io/v1
+kind: Cluster
+metadata:
+  name: {{ .Values.postgres.clusterName }}
+  annotations:
+    "helm.sh/hook": post-install,post-upgrade
+spec:
+  instances: {{ .Values.postgres.instances }}
+  enableSuperuserAccess: true
+  primaryUpdateStrategy: {{ .Values.postgres.primaryUpdateStrategy }}
+  storage:
+    size: {{ .Values.postgres.storageSize }}
+  monitoring:
+    enablePodMonitor: true
