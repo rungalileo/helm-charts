@@ -5,8 +5,14 @@ dependencies:
 - name: model-server
   repository: file://../model-server
   version: 0.1.0
+- name: runners
+  repository: file://../runners
+  version: 0.1.0
 - name: ui
   repository: file://../ui
   version: 0.1.0
-digest: sha256:31c79b1c413d364a98bb9cf53b42261b121b941f888d97e70f377e648bc7c8e2
-generated: "2024-01-17T13:50:18.310043-06:00"
+- name: minio
+  repository: https://charts.min.io/
+  version: 5.0.15
+digest: sha256:9cd91fcff5c779d6a7ec3dc7480c0e0b354abe2be294067f423f88e361487b7b
+generated: "2024-01-26T16:29:58.429466-06:00"

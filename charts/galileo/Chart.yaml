@@ -30,6 +30,12 @@ dependencies:
   - name: model-server
     version: "0.1.0"
     repository: "file://../model-server"
+  - name: runners
+    version: "0.1.0"
+    repository: "file://../runners"
   - name: ui
     version: "0.1.0"
     repository: "file://../ui"
+  - name: minio
+    version: "5.0.15"
+    repository: "https://charts.min.io/"
