@@ -2,8 +2,8 @@ dependencies:
 - name: api
   repository: file://../api
   version: 0.1.0
-- name: model-server
-  repository: file://../model-server
+- name: comet
+  repository: file://../comet
   version: 0.1.0
 - name: runners
   repository: file://../runners
@@ -14,5 +14,5 @@ dependencies:
 - name: minio
   repository: https://charts.min.io/
   version: 5.0.15
-digest: sha256:9cd91fcff5c779d6a7ec3dc7480c0e0b354abe2be294067f423f88e361487b7b
-generated: "2024-01-26T16:29:58.429466-06:00"
+digest: sha256:5c28b698b3fe5fd734475f72f6fcb36114ba265daf67477ea310de3a8fea5442
+generated: "2024-01-29T14:13:36.949547-06:00"

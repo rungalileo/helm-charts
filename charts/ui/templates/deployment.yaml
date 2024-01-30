@@ -41,10 +41,15 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           env:
+            - name: SECRET
+              valueFrom:
+                secretKeyRef:
+                  key: GALILEO_UI_SECRET_KEY
+                  name: ui-secret
             - name: NEXT_PUBLIC_API_URL
-              value: "https://api.local.rungalileo.io"
+              value: "http://galileo-api.galileo.svc.cluster.local:8088"
             - name: NEXTAUTH_URL
-              value: "https://console.local.rungalileo.io"
+              value: "http://console.local.rungalileo.io"
           # livenessProbe:
           #   httpGet:
           #     path: /

@@ -8,6 +8,10 @@ spec:
   instances: {{ .Values.postgres.instances }}
   enableSuperuserAccess: true
   primaryUpdateStrategy: {{ .Values.postgres.primaryUpdateStrategy }}
+  bootstrap:
+    initdb:
+      database: galileo
+      owner: galileo
   storage:
     size: {{ .Values.postgres.storageSize }}
   monitoring:

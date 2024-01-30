@@ -55,22 +55,22 @@ spec:
                   name: api-secret
                   key: GALILEO_API_SECRET_KEY
             - name: GALILEO_MINIO_ENDPOINT_URL
-              value: "http://runners-minio.galileo.svc.cluster.local:9000"
+              value: "http://galileo-minio.galileo.svc.cluster.local:9000"
             - name: GALILEO_MINIO_K8S_SVC_ADDR
-              value: "http://runners-minio.galileo.svc.cluster.local:9000"
+              value: "http://galileo-minio.galileo.svc.cluster.local:9000"
             - name: GALILEO_MINIO_FQDN
-              value: "runners-minio.galileo.svc.cluster.local:9000"
+              value: "galileo-minio.galileo.svc.cluster.local:9000"
             - name: GALILEO_MINIO_REGION
               value: "us-east-1"
             - name: GALILEO_MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: runners-minio
+                  name: galileo-minio
                   key: rootUser
             - name: GALILEO_MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: runners-minio
+                  name: galileo-minio
                   key: rootPassword
           # livenessProbe:
           #   httpGet:

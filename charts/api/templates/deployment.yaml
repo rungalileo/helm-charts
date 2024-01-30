@@ -30,6 +30,94 @@ spec:
       serviceAccountName: {{ include "api.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: wait-deps
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          command:
+            - bash
+            - "-c"
+            - |
+              set -ex
+              while [ $(pg_isready -h postgres-1.galileo.svc.cluster.local | echo $?) -ne 0 ]; do
+                sleep 10;
+              done
+              while [ $(pg_isready -h postgres-2.galileo.svc.cluster.local | echo $?) -ne 0 ]; do
+                sleep 10;
+              done
+              while [ $(curl -sw '%{http_code}' "http://minio-client.galileo.svc.cluster.local:9000/minio/health/ready" -o /dev/null) -ne 200 ]; do
+                sleep 10;
+              done
+        - name: alembic-migrations
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: Always
+          args: ["alembic", "upgrade", "head"]
+          env:
+            - name: GALILEO_APP
+              value: api
+            - name: GALILEO_POSTGRES_USER
+              value: galileo
+            - name: GALILEO_CONSOLE_URL
+              value: "https://console.local.rungalileo.io"
+            - name: GALILEO_HEADLESS_API_SVC_DNS
+              value: "api-hs.galileo.svc.cluster.local"
+            - name: GALILEO_RUNNERS_SVC_NAME
+              value: "runners-hs.galileo.svc.cluster.local"
+            - name: GALILEO_RUNNERS_SVC_PORT
+              value: "50052"
+            - name: GALILEO_API_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: api-secret
+                  key: GALILEO_API_SECRET_KEY
+            - name: GALILEO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: dbname
+            - name: GALILEO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: username
+            - name: GALILEO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: password
+            - name: GALILEO_DATABASE_URL_WRITE
+              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@postgres-rw.galileo.svc.cluster.local:5432/$(GALILEO_DATABASE_NAME)"
+            - name: GALILEO_DATABASE_URL_READ
+              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@postgres-rw.galileo.svc.cluster.local:5432/$(GALILEO_DATABASE_NAME)"
+            - name: GALILEO_MINIO_ENDPOINT_URL
+              value: "http://galileo-minio.galileo.svc.cluster.local:9000"
+            - name: GALILEO_MINIO_K8S_SVC_ADDR
+              value: "http://galileo-minio.galileo.svc.cluster.local:9000"
+            - name: GALILEO_MINIO_FQDN
+              value: "galileo-minio.galileo.svc.cluster.local:9000"
+            - name: GALILEO_MINIO_REGION
+              value: "us-east-1"
+            - name: GALILEO_MINIO_ACCESS_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: galileo-minio
+                  key: rootUser
+            - name: GALILEO_MINIO_SECRET_KEY
+              valueFrom:
+                secretKeyRef:
+                  name: galileo-minio
+                  key: rootPassword
+          # envFrom:
+          # - configMapRef:
+          #     name: galileo-config
+          # - configMapRef:
+          #     name: objectstore-config
+          # - secretRef:
+          #     name: postgres
+          # - secretRef:
+          #     name: minio
+          # - secretRef:
+          #     name: api-secret
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -54,33 +142,42 @@ spec:
                 secretKeyRef:
                   name: api-secret
                   key: GALILEO_API_SECRET_KEY
+            - name: GALILEO_DATABASE_NAME
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: dbname
+            - name: GALILEO_DATABASE_USER
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: username
+            - name: GALILEO_DATABASE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: postgres-app
+                  key: password
             - name: GALILEO_DATABASE_URL_WRITE
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-superuser
-                  key: uri
+              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@postgres-rw.galileo.svc.cluster.local:5432/$(GALILEO_DATABASE_NAME)"
             - name: GALILEO_DATABASE_URL_READ
-              valueFrom:
-                secretKeyRef:
-                  name: postgres-superuser
-                  key: uri
+              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@postgres-rw.galileo.svc.cluster.local:5432/$(GALILEO_DATABASE_NAME)"
             - name: GALILEO_MINIO_ENDPOINT_URL
-              value: "http://api-minio.galileo.svc.cluster.local:9000"
+              value: "http://galileo-minio.galileo.svc.cluster.local:9000"
             - name: GALILEO_MINIO_K8S_SVC_ADDR
-              value: "http://api-minio.galileo.svc.cluster.local:9000"
+              value: "http://galileo-minio.galileo.svc.cluster.local:9000"
             - name: GALILEO_MINIO_FQDN
-              value: "api-minio.galileo.svc.cluster.local:9000"
+              value: "galileo-minio.galileo.svc.cluster.local:9000"
             - name: GALILEO_MINIO_REGION
               value: "us-east-1"
             - name: GALILEO_MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: api-minio
+                  name: galileo-minio
                   key: rootUser
             - name: GALILEO_MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: api-minio
+                  name: galileo-minio
                   key: rootPassword
           # livenessProbe:
           #   httpGet:

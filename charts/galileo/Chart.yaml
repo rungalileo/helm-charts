@@ -27,9 +27,12 @@ dependencies:
   - name: api
     version: "0.1.0"
     repository: "file://../api"
-  - name: model-server
+  - name: comet
     version: "0.1.0"
-    repository: "file://../model-server"
+    repository: "file://../comet"
+  # - name: model-server
+  #   version: "0.1.0"
+  #   repository: "file://../model-server"
   - name: runners
     version: "0.1.0"
     repository: "file://../runners"
