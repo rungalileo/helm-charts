@@ -1,26 +1,41 @@
 nameOverride: ""
 fullnameOverride: ""
 
+# Cert-Manager configuration: https://artifacthub.io/packages/helm/cert-manager/cert-manager?modal=values&path=installCRDs
+cert-manager:
+  installCRDs: true
+
 # API configuration
 api:
   ingress:
     enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: ca-issuer
     hosts:
       - host: api.local.rungalileo.io
         paths:
           - path: /
             pathType: ImplementationSpecific
-
+    tls:
+      - hosts:
+          - api.local.rungalileo.io
+        secretName: api-tls-secret
 
 # UI configuration
 ui:
   ingress:
     enabled: true
+    annotations:
+      cert-manager.io/cluster-issuer: ca-issuer
     hosts:
       - host: console.local.rungalileo.io
         paths:
           - path: /
             pathType: ImplementationSpecific
+    tls:
+      - hosts:
+          - console.local.rungalileo.io
+        secretName: ui-tls-secret
 
 # MinIO configuration: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
 minio:

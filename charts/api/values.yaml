@@ -144,5 +144,5 @@ minio:
 postgres:
   clusterName: "postgres"
   instances: 2
-  primaryUpdateStrategy: "unsupervised"
+  primaryUpdateStrategy: "supervised"
   storageSize: "1Gi"

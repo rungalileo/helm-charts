@@ -55,8 +55,6 @@ spec:
           env:
             - name: GALILEO_APP
               value: api
-            - name: GALILEO_POSTGRES_USER
-              value: galileo
             - name: GALILEO_CONSOLE_URL
               value: "https://console.local.rungalileo.io"
             - name: GALILEO_HEADLESS_API_SVC_DNS
@@ -129,8 +127,10 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           env:
+            - name: GALILEO_ADDITIONAL_ORIGINS
+              value: "*"
             - name: GALILEO_CONSOLE_URL
-              value: "https://console.local.rungalileo.io"
+              value: "http://console.local.rungalileo.io"
             - name: GALILEO_HEADLESS_API_SVC_DNS
               value: "api-hs.galileo.svc.cluster.local"
             - name: GALILEO_RUNNERS_SVC_NAME
@@ -179,14 +179,22 @@ spec:
                 secretKeyRef:
                   name: galileo-minio
                   key: rootPassword
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          readinessProbe:
+            httpGet:
+              path: /healthcheck
+              port: http
+            successThreshold: 1
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+          livenessProbe:
+            httpGet:
+              path: /healthcheck
+              port: http
+            successThreshold: 1
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}

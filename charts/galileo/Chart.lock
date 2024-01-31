@@ -11,8 +11,11 @@ dependencies:
 - name: ui
   repository: file://../ui
   version: 0.1.0
+- name: cert-manager
+  repository: https://charts.jetstack.io
+  version: v1.13.3
 - name: minio
   repository: https://charts.min.io/
   version: 5.0.15
-digest: sha256:5c28b698b3fe5fd734475f72f6fcb36114ba265daf67477ea310de3a8fea5442
-generated: "2024-01-29T14:13:36.949547-06:00"
+digest: sha256:f5289ada638ee228cfb7eccfe8ac51ade8ece4789c46aec3a3186d214064bd5f
+generated: "2024-01-31T10:57:57.343765-06:00"

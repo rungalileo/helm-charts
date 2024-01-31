@@ -39,6 +39,9 @@ dependencies:
   - name: ui
     version: "0.1.0"
     repository: "file://../ui"
+  - name: cert-manager
+    version: "1.13.3"
+    repository: "https://charts.jetstack.io"
   - name: minio
     version: "5.0.15"
     repository: "https://charts.min.io/"
