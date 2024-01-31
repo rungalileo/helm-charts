@@ -3,7 +3,7 @@ kind: Cluster
 metadata:
   name: {{ .Values.postgres.clusterName }}
   annotations:
-    "helm.sh/hook": post-install,post-upgrade
+    "helm.sh/hook": post-install
 spec:
   instances: {{ .Values.postgres.instances }}
   enableSuperuserAccess: true

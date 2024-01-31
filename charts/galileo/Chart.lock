@@ -5,6 +5,9 @@ dependencies:
 - name: comet
   repository: file://../comet
   version: 0.1.0
+- name: model-server
+  repository: file://../model-server
+  version: 0.1.0
 - name: runners
   repository: file://../runners
   version: 0.1.0
@@ -17,5 +20,8 @@ dependencies:
 - name: minio
   repository: https://charts.min.io/
   version: 5.0.15
-digest: sha256:f5289ada638ee228cfb7eccfe8ac51ade8ece4789c46aec3a3186d214064bd5f
-generated: "2024-01-31T10:57:57.343765-06:00"
+- name: cloudnative-pg
+  repository: https://cloudnative-pg.github.io/charts
+  version: 0.20.0
+digest: sha256:e604a24d402b88dad4cab85be3b894ccc5d7ed91ed907cfe081e58be80c02ecd
+generated: "2024-01-31T16:31:34.43393-06:00"

@@ -195,6 +195,12 @@ spec:
             initialDelaySeconds: 30
             periodSeconds: 10
             timeoutSeconds: 5
+          startupProbe:
+            periodSeconds: 10
+            failureThreshold: 30
+            httpGet:
+              path: /healthcheck
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}

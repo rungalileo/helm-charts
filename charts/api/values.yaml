@@ -145,4 +145,4 @@ postgres:
   clusterName: "postgres"
   instances: 2
   primaryUpdateStrategy: "supervised"
-  storageSize: "1Gi"
+  storageSize: "2Gi"
