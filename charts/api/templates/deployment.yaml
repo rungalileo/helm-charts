@@ -98,12 +98,12 @@ spec:
             - name: GALILEO_MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: galileo-minio
+                  name: minio-secret
                   key: rootUser
             - name: GALILEO_MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: galileo-minio
+                  name: minio-secret
                   key: rootPassword
           # envFrom:
           # - configMapRef:
@@ -172,12 +172,12 @@ spec:
             - name: GALILEO_MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
-                  name: galileo-minio
+                  name: minio-secret
                   key: rootUser
             - name: GALILEO_MINIO_SECRET_KEY
               valueFrom:
                 secretKeyRef:
-                  name: galileo-minio
+                  name: minio-secret
                   key: rootPassword
           readinessProbe:
             httpGet:
