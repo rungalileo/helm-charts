@@ -2,6 +2,26 @@
 
 ## Installation
 
+Before installing the Galileo Helm chart, certain secrets need to be set up in your Kubernetes cluster. These secrets are essential for the proper functioning of Galileo components and include configurations for Docker registry access and various service-specific settings.
+
+### Prerequisites for Installation
+
+Ensure the following secrets are added to your Kubernetes namespace before proceeding with the Galileo Helm chart installation:
+
+```bash
+kubectl create ns galileo
+kubectl apply -f galileo-docker-registry-secret.yaml -n galileo
+kubectl apply -f api-secret.yaml -n galileo
+kubectl apply -f ui-secret.yaml -n galileo
+kubectl apply -f minio-secret.yaml -n galileo
+``````
+
+This command sequence creates the galileo namespace and applies the necessary secret configurations for the Docker registry, API, UI, and MinIO services.
+
+### Installing the Chart
+
+With the prerequisites in place, you can install the Galileo Helm chart using the following commands:
+
 ```bash
 helm dependency update ./charts/galileo
 helm install galileo ./charts/galileo --namespace galileo --create-namespace
