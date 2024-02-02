@@ -72,3 +72,9 @@ This command should return information about the Kubernetes master and other ser
 Next Steps
 
 Once your local cluster is set up, you can proceed with installing the Galileo Helm chart into this cluster by following the installation instructions above.
+
+---------
+
+AWS Instructions
+
+https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html

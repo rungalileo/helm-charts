@@ -35,18 +35,48 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          command:
+            - "/bin/sh"
+            - "-ec"
+            - 'poetry run celery --app=runners.celery_app.celery_app worker --loglevel="INFO" --concurrency=$CONCURRENCY --queues=$QUEUES'
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           env:
-            - name: GALILEO_CONSOLE_URL
-              value: "https://console.local.rungalileo.io"
+            - name: SENTRY_DSN
+              value: ""
+            - name: GALILEO_APP
+              value: runners
+            - name: GALILEO_RABBITMQ_HOST
+              value: "rabbitmq-cluster.galileo.svc.cluster.local"
+            - name: GALILEO_RABBITMQ_PORT
+              value: "5672"
+            - name: GALILEO_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: username
+            - name: GALILEO_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: password
+            - name: QUEUES
+              value: "health,fast,normal"
+            - name: POOL
+              value: "processes"
+            - name: CONCURRENCY
+              value: "5"
+            # - name: GALILEO_CONSOLE_URL
+            #   value: "http://console.helm-test.rungalileo.io"
             - name: GALILEO_HEADLESS_API_SVC_DNS
-              value: "api-hs.galileo.svc.cluster.local"
+              value: "galileo-api.galileo.svc.cluster.local"
+            - name: GALILEO_API_SVC_PORT
+              value: "8088"
             - name: GALILEO_RUNNERS_SVC_NAME
-              value: "runners-hs.galileo.svc.cluster.local"
+              value: "galileo-runners.galileo.svc.cluster.local"
             - name: GALILEO_RUNNERS_SVC_PORT
               value: "50052"
             - name: GALILEO_API_SECRET_KEY

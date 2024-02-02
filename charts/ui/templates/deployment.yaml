@@ -47,9 +47,9 @@ spec:
                   key: GALILEO_UI_SECRET_KEY
                   name: ui-secret
             - name: NEXT_PUBLIC_API_URL
-              value: "http://galileo-api.galileo.svc.cluster.local:8088"
+              value: "http://api.helm-test.rungalileo.io"
             - name: NEXTAUTH_URL
-              value: "http://console.local.rungalileo.io"
+              value: "http://console.helm-test.rungalileo.io"
           readinessProbe:
             failureThreshold: 6
             httpGet:
@@ -66,6 +66,12 @@ spec:
             initialDelaySeconds: 120
             periodSeconds: 5
             timeoutSeconds: 5
+          startupProbe:
+            periodSeconds: 10
+            failureThreshold: 30
+            httpGet:
+              path: /
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}

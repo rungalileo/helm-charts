@@ -23,5 +23,8 @@ dependencies:
 - name: cloudnative-pg
   repository: https://cloudnative-pg.github.io/charts
   version: 0.20.0
-digest: sha256:e604a24d402b88dad4cab85be3b894ccc5d7ed91ed907cfe081e58be80c02ecd
-generated: "2024-01-31T16:31:34.43393-06:00"
+- name: rabbitmq-cluster-operator
+  repository: https://charts.bitnami.com/bitnami
+  version: 3.15.2
+digest: sha256:36031f9fdcf0f80de6e2086cc875c98a057b6f574fdd45aee817b5f1ab2760e1
+generated: "2024-02-02T13:58:25.833705-06:00"

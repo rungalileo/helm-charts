@@ -56,7 +56,7 @@ spec:
             - name: GALILEO_APP
               value: api
             - name: GALILEO_CONSOLE_URL
-              value: "https://console.local.rungalileo.io"
+              value: "https://console.helm-test.rungalileo.io"
             - name: GALILEO_HEADLESS_API_SVC_DNS
               value: "api-hs.galileo.svc.cluster.local"
             - name: GALILEO_RUNNERS_SVC_NAME
@@ -127,10 +127,24 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           env:
+            - name: GALILEO_RABBITMQ_HOST
+              value: "rabbitmq-cluster.galileo.svc.cluster.local"
+            - name: GALILEO_RABBITMQ_PORT
+              value: "5672"
+            - name: GALILEO_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: username
+            - name: GALILEO_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: password
             - name: GALILEO_ADDITIONAL_ORIGINS
               value: "*"
             - name: GALILEO_CONSOLE_URL
-              value: "http://console.local.rungalileo.io"
+              value: "https://console.helm-test.rungalileo.io"
             - name: GALILEO_HEADLESS_API_SVC_DNS
               value: "api-hs.galileo.svc.cluster.local"
             - name: GALILEO_RUNNERS_SVC_NAME

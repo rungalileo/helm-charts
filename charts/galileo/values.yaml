@@ -11,14 +11,18 @@ api:
     enabled: true
     annotations:
       cert-manager.io/cluster-issuer: ca-issuer
+      kubernetes.io/ingress.class: "alb"
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.name: galileo
     hosts:
-      - host: api.local.rungalileo.io
+      - host: api.helm-test.rungalileo.io
         paths:
           - path: /
-            pathType: ImplementationSpecific
+            pathType: Prefix
     tls:
       - hosts:
-          - api.local.rungalileo.io
+          - api.helm-test.rungalileo.io
         secretName: api-tls-secret
 
 # UI configuration
@@ -27,14 +31,18 @@ ui:
     enabled: true
     annotations:
       cert-manager.io/cluster-issuer: ca-issuer
+      kubernetes.io/ingress.class: "alb"
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.name: galileo
     hosts:
-      - host: console.local.rungalileo.io
+      - host: console.helm-test.rungalileo.io
         paths:
           - path: /
-            pathType: ImplementationSpecific
+            pathType: Prefix
     tls:
       - hosts:
-          - console.local.rungalileo.io
+          - console.helm-test.rungalileo.io
         secretName: ui-tls-secret
 
 # MinIO configuration: https://github.com/minio/minio/blob/master/helm/minio/values.yaml

@@ -1,0 +1,23 @@
+apiVersion: rabbitmq.com/v1beta1
+kind: RabbitmqCluster
+metadata:
+  name: "rabbitmq-cluster"
+spec:
+  replicas: 2
+  persistence:
+    storageClassName: "gp2"
+    storage: 5Gi
+  resources:
+    requests:
+      cpu: 256m
+      memory: 512Mi
+    limits:
+      cpu: 1000m
+      memory: 1Gi
+  rabbitmq:
+    additionalConfig: |
+      # https://www.rabbitmq.com/prometheus.html#metric-aggregation
+      prometheus.return_per_object_metrics = true
+    additionalPlugins:
+      - rabbitmq_shovel
+      - rabbitmq_shovel_management
