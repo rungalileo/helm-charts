@@ -1,54 +1,59 @@
+{{- range .Values.runnerDeployments }}
+---
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{ include "runners.fullname" . }}
+  name: {{ .name }}
   labels:
-    {{- include "runners.labels" . | nindent 4 }}
+    {{- include "runners.labels" $ | nindent 4 }}
 spec:
-  {{- if not .Values.autoscaling.enabled }}
-  replicas: {{ .Values.replicaCount }}
+  {{- if not $.Values.autoscaling.enabled }}
+  replicas: {{ $.Values.replicaCount }}
   {{- end }}
   selector:
     matchLabels:
-      {{- include "runners.selectorLabels" . | nindent 6 }}
+      app: {{ .name }}
   template:
     metadata:
-      {{- with .Values.podAnnotations }}
+      {{- with $.Values.podAnnotations }}
       annotations:
+        cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
         {{- toYaml . | nindent 8 }}
       {{- end }}
       labels:
-        {{- include "runners.labels" . | nindent 8 }}
-	{{- with .Values.podLabels }}
+        app: {{ .name }}
+        updated: "{{ now | unixEpoch }}"
+        {{- include "runners.labels" $ | nindent 8 }}
+	{{- with $.Values.podLabels }}
         {{- toYaml . | nindent 8 }}
         {{- end }}
     spec:
-      {{- with .Values.imagePullSecrets }}
+      {{- with $.Values.imagePullSecrets }}
       imagePullSecrets:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      serviceAccountName: {{ include "runners.serviceAccountName" . }}
+      serviceAccountName: {{ include "runners.serviceAccountName" $ }}
       securityContext:
-        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+        {{- toYaml $.Values.podSecurityContext | nindent 8 }}
       containers:
-        - name: {{ .Chart.Name }}
+        - name: {{ .name }}
           securityContext:
-            {{- toYaml .Values.securityContext | nindent 12 }}
-          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+            {{- toYaml $.Values.securityContext | nindent 12 }}
+          image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
           command:
             - "/bin/sh"
             - "-ec"
             - 'poetry run celery --app=runners.celery_app.celery_app worker --loglevel="INFO" --concurrency=$CONCURRENCY --queues=$QUEUES'
-          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: {{ $.Values.service.port }}
               protocol: TCP
           env:
             - name: SENTRY_DSN
               value: ""
             - name: GALILEO_APP
-              value: runners
+              value: {{ .name }}
             - name: GALILEO_RABBITMQ_HOST
               value: "rabbitmq-cluster.galileo.svc.cluster.local"
             - name: GALILEO_RABBITMQ_PORT
@@ -63,14 +68,12 @@ spec:
                 secretKeyRef:
                   name: rabbitmq-cluster-default-user
                   key: password
-            - name: QUEUES
-              value: "health,fast,normal"
             - name: POOL
-              value: "processes"
+              value: "{{ .pool }}"
+            - name: QUEUES
+              value: "{{ .queues }}"
             - name: CONCURRENCY
-              value: "5"
-            # - name: GALILEO_CONSOLE_URL
-            #   value: "http://console.helm-test.rungalileo.io"
+              value: "{{ .concurrency }}"
             - name: GALILEO_HEADLESS_API_SVC_DNS
               value: "galileo-api.galileo.svc.cluster.local"
             - name: GALILEO_API_SVC_PORT
@@ -111,24 +114,27 @@ spec:
           #     path: /
           #     port: http
           resources:
-            {{- toYaml .Values.resources | nindent 12 }}
-          {{- with .Values.volumeMounts }}
+            requests:
+              memory: {{ .memory_request }}
+              cpu: {{ .cpu_request }}
+          {{- with $.Values.volumeMounts }}
           volumeMounts:
             {{- toYaml . | nindent 12 }}
           {{- end }}
-      {{- with .Values.volumes }}
+      {{- with $.Values.volumes }}
       volumes:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.nodeSelector }}
+      {{- with $.Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.affinity }}
+      {{- with $.Values.affinity }}
       affinity:
         {{- toYaml . | nindent 8 }}
       {{- end }}
-      {{- with .Values.tolerations }}
+      {{- with $.Values.tolerations }}
       tolerations:
         {{- toYaml . | nindent 8 }}
       {{- end }}
+{{- end }}

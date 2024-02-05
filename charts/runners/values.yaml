@@ -2,6 +2,26 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+runnerDeployments:
+  - name: "runners"
+    queues: "health,fast,normal"
+    pool: "processes"
+    cpu_request: 1000m
+    concurrency: 5
+    memory_request: 2Gi
+  - name: "runners-small"
+    queues: "health,fast"
+    pool: "processes"
+    cpu_request: 512m
+    concurrency: 2
+    memory_request: 1Gi
+  - name: "runners-large"
+    queues: "health,fast,slow"
+    pool: "processes"
+    concurrency: 2
+    cpu_request: 2000m
+    memory_request: 4Gi
+
 replicaCount: 1
 
 image:
@@ -91,7 +111,8 @@ volumeMounts: []
 #   mountPath: "/etc/foo"
 #   readOnly: true
 
-nodeSelector: {}
+nodeSelector:
+  galileo-node-type: galileo-runner
 
 tolerations: []
 
