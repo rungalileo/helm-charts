@@ -49,5 +49,5 @@ dependencies:
     version: "0.20.0"
     repository: "https://cloudnative-pg.github.io/charts"
   - name: rabbitmq-cluster-operator
-    version: "3.15.2"
+    version: "3.15.4"
     repository: "https://charts.bitnami.com/bitnami"

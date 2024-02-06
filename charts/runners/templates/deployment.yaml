@@ -22,7 +22,6 @@ spec:
       {{- end }}
       labels:
         app: {{ .name }}
-        updated: "{{ now | unixEpoch }}"
         {{- include "runners.labels" $ | nindent 8 }}
 	{{- with $.Values.podLabels }}
         {{- toYaml . | nindent 8 }}
@@ -105,14 +104,15 @@ spec:
                 secretKeyRef:
                   name: minio-secret
                   key: rootPassword
-          # livenessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /
-          #     port: http
+          livenessProbe:
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - poetry run celery --app=runners.celery_app.celery_app inspect ping
+            initialDelaySeconds: 120
+            periodSeconds: 60
+            timeoutSeconds: 60
           resources:
             requests:
               memory: {{ .memory_request }}

@@ -1,7 +1,7 @@
 nameOverride: ""
 fullnameOverride: ""
 
-# Cert-Manager configuration: https://artifacthub.io/packages/helm/cert-manager/cert-manager?modal=values&path=installCRDs
+# Cert-Manager configuration: https://artifacthub.io/packages/helm/cert-manager/cert-manager?modal=values
 cert-manager:
   installCRDs: true
 
@@ -10,11 +10,12 @@ api:
   ingress:
     enabled: true
     annotations:
-      cert-manager.io/cluster-issuer: ca-issuer
       kubernetes.io/ingress.class: "alb"
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/group.name: galileo
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:818240400754:certificate/8708a742-58cf-4159-b77b-fb3430f7619a
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     hosts:
       - host: api.helm-test.rungalileo.io
         paths:
@@ -23,18 +24,19 @@ api:
     tls:
       - hosts:
           - api.helm-test.rungalileo.io
-        secretName: api-tls-secret
+        secretName: api-tls
 
 # UI configuration
 ui:
   ingress:
     enabled: true
     annotations:
-      cert-manager.io/cluster-issuer: ca-issuer
       kubernetes.io/ingress.class: "alb"
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/group.name: galileo
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:818240400754:certificate/fa38169e-5e36-4838-a657-af78c06c81c0
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     hosts:
       - host: console.helm-test.rungalileo.io
         paths:
@@ -43,7 +45,7 @@ ui:
     tls:
       - hosts:
           - console.helm-test.rungalileo.io
-        secretName: ui-tls-secret
+        secretName: ui-tls
 
 # MinIO configuration: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
 minio:
