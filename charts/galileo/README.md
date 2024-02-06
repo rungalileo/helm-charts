@@ -70,8 +70,8 @@ Next Steps
 
 Once your local cluster is set up, you can proceed with installing the Galileo Helm chart into this cluster by following the installation instructions above.
 
----------
+## Integrating Load Balancer Controllers
 
-AWS Instructions
+### AWS Instructions
 
-https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html
+Install the AWS Load Balancer Controller add-on as per the [the official AWS documentation](https://docs.aws.amazon.com/eks/latest/userguide/aws-load-balancer-controller.html)
