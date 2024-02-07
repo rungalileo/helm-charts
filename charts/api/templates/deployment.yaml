@@ -170,6 +170,12 @@ spec:
                 secretKeyRef:
                   name: minio-secret
                   key: rootPassword
+            {{- with .Values.env }}
+            {{- range $key, $value := . }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
           readinessProbe:
             httpGet:
               path: /healthcheck
