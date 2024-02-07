@@ -99,6 +99,14 @@ tolerations: []
 
 affinity: {}
 
+env: {}
+  # Add environment variables here as needed
+  # GALILEO_CONSOLE_URL: "https://console.helm-test.rungalileo.io"
+  # GALILEO_ADDITIONAL_ORIGINS: "*"
+  # GALILEO_HEADLESS_API_SVC_DNS: "api-hs.galileo.svc.cluster.local"
+  # GALILEO_RUNNERS_SVC_NAME: "runners-hs.galileo.svc.cluster.local"
+  # GALILEO_RUNNERS_SVC_PORT: "50052"
+
 # MinIO configuration: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
 minio:
   replicas: 2 # 2 is the minimum

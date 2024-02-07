@@ -46,10 +46,12 @@ spec:
                 secretKeyRef:
                   key: GALILEO_UI_SECRET_KEY
                   name: ui-secret
-            - name: NEXT_PUBLIC_API_URL
-              value: "http://api.helm-test.rungalileo.io"
-            - name: NEXTAUTH_URL
-              value: "http://console.helm-test.rungalileo.io"
+            {{- with .Values.env }}
+            {{- range $key, $value := . }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
           readinessProbe:
             failureThreshold: 6
             httpGet:

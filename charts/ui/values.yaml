@@ -98,3 +98,8 @@ nodeSelector:
 tolerations: []
 
 affinity: {}
+
+env: {}
+  # Add environment variables here as needed
+  # NEXT_PUBLIC_API_URL: "http://api.helm-test.rungalileo.io"
+  # NEXTAUTH_URL: "http://console.helm-test.rungalileo.io"
