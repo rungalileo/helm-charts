@@ -3,10 +3,16 @@ fullnameOverride: ""
 
 # Cert-Manager configuration: https://artifacthub.io/packages/helm/cert-manager/cert-manager?modal=values
 cert-manager:
+  fullnameOverride: "cert-manager"
   installCRDs: true
+
+# Comet configuration
+comet:
+  fullnameOverride: "comet"
 
 # API configuration
 api:
+  fullnameOverride: "api"
   env:
     GALILEO_CONSOLE_URL: "https://console.example.local"
     GALILEO_ADDITIONAL_ORIGINS: "*"
@@ -25,8 +31,13 @@ api:
           - api.example.local
         secretName: api-tls
 
+# Wizard configuration
+model-server:
+  fullnameOverride: "wizard"
+
 # UI configuration
 ui:
+  fullnameOverride: "ui"
   env:
     NEXT_PUBLIC_API_URL: "http://api.example.local"
     NEXTAUTH_URL: "http://console.example.local"
@@ -42,8 +53,13 @@ ui:
           - console.example.local
         secretName: ui-tls
 
+# CloudNative PG configuration: https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/values.yaml
+cloudnative-pg:
+  fullnameOverride: "cloudnative-pg"
+
 # MinIO configuration: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
 minio:
+  fullnameOverride: "minio"
   replicas: 2 # 2 is the minimum
   existingSecret: minio-secret # specify user + password manually to avoid redeployments
   resources:
@@ -85,3 +101,9 @@ minio:
       purge: false
       versioning: false
       objectlocking: false
+
+# RabbitMQ Operator configuration: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq-cluster-operator/values.yaml
+rabbitmq-cluster-operator:
+  fullnameOverride: "rabbitmq-cluster-operator"
+  msgTopologyOperator:
+    fullnameOverride: "rabbitmq-messaging-topology-operator"

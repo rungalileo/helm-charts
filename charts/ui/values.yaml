@@ -12,6 +12,7 @@ image:
 
 imagePullSecrets:
   - name: galileo-docker-registry-secret
+  
 nameOverride: ""
 fullnameOverride: ""
 
