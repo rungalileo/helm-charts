@@ -33,7 +33,7 @@ spec:
       initContainers:
         - name: wait-deps
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           command:
             - bash
             - "-c"
@@ -50,7 +50,7 @@ spec:
               done
         - name: alembic-migrations
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
-          imagePullPolicy: Always
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
           args: ["alembic", "upgrade", "head"]
           env:
             - name: GALILEO_APP
