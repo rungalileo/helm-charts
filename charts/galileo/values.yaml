@@ -9,10 +9,12 @@ cert-manager:
 
 # Comet configuration
 comet:
+  nodeSelector: {}
   fullnameOverride: "comet"
 
 # API configuration
 api:
+  nodeSelector: {}
   fullnameOverride: "api"
   env:
     GALILEO_CONSOLE_URL: "https://console.example.local"
@@ -30,10 +32,12 @@ api:
 
 # Wizard configuration
 model-server:
+  nodeSelector: {}
   fullnameOverride: "wizard"
 
 # UI configuration
 ui:
+  nodeSelector: {}
   fullnameOverride: "ui"
   env:
     NEXT_PUBLIC_API_URL: "http://api.example.local"
@@ -58,6 +62,13 @@ minio:
   resources:
     requests:
       memory: 1Gi
+  resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 100m
+        memory: 1Gi
   buckets:
     - name: galileo-auto-datasets
       policy: none
@@ -94,6 +105,47 @@ minio:
       purge: false
       versioning: false
       objectlocking: false
+  makePolicyJob:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+  makeBucketJob:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+  makeUserJob:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+  customCommandJob:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+  makeServiceAccountJob:
+    resources:
+      limits:
+        cpu: 100m
+        memory: 128Mi
+      requests:
+        cpu: 100m
+        memory: 128Mi
+  
 
 # RabbitMQ Operator configuration: https://github.com/bitnami/charts/blob/main/bitnami/rabbitmq-cluster-operator/values.yaml
 rabbitmq-cluster-operator:
