@@ -27,10 +27,6 @@ api:
         paths:
           - path: /
             pathType: Prefix
-    tls:
-      - hosts:
-          - api.example.local
-        secretName: api-tls
 
 # Wizard configuration
 model-server:
@@ -49,10 +45,6 @@ ui:
         paths:
           - path: /
             pathType: Prefix
-    tls:
-      - hosts:
-          - console.example.local
-        secretName: ui-tls
 
 # CloudNative PG configuration: https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/values.yaml
 cloudnative-pg:
