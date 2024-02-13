@@ -60,9 +60,6 @@ minio:
   replicas: 2 # 2 is the minimum
   existingSecret: minio-secret # specify user + password manually to avoid redeployments
   resources:
-    requests:
-      memory: 1Gi
-  resources:
       limits:
         cpu: 1000m
         memory: 2Gi
