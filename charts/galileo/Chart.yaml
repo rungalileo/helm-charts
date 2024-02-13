@@ -42,6 +42,7 @@ dependencies:
   - name: cert-manager
     version: "1.13.3"
     repository: "https://charts.jetstack.io"
+    condition: cert-manager.enabled
   - name: minio
     version: "5.0.15"
     repository: "https://charts.min.io/"

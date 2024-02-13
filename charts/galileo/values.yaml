@@ -3,6 +3,7 @@ fullnameOverride: ""
 
 # Cert-Manager configuration: https://artifacthub.io/packages/helm/cert-manager/cert-manager?modal=values
 cert-manager:
+  enabled: false
   fullnameOverride: "cert-manager"
   installCRDs: true
 
