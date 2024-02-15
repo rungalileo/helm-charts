@@ -30,6 +30,10 @@ api:
           - path: /
             pathType: Prefix
 
+# Runners configuration
+runners:
+  nodeSelector: {}
+
 # Wizard configuration
 model-server:
   nodeSelector: {}
