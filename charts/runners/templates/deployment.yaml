@@ -1,3 +1,4 @@
+{{- $root := . -}}
 {{- range .Values.runnerDeployments }}
 ---
 apiVersion: apps/v1
@@ -54,7 +55,7 @@ spec:
             - name: GALILEO_APP
               value: {{ .name }}
             - name: GALILEO_RABBITMQ_HOST
-              value: "rabbitmq-cluster.galileo.svc.cluster.local"
+              value: "rabbitmq-cluster.{{ $.Release.Namespace }}.svc.cluster.local"
             - name: GALILEO_RABBITMQ_PORT
               value: "5672"
             - name: GALILEO_RABBITMQ_USERNAME
@@ -74,11 +75,11 @@ spec:
             - name: CONCURRENCY
               value: "{{ .concurrency }}"
             - name: GALILEO_HEADLESS_API_SVC_DNS
-              value: "galileo-api.galileo.svc.cluster.local"
+              value: "api.{{ $.Release.Namespace }}.svc.cluster.local"
             - name: GALILEO_API_SVC_PORT
               value: "8088"
             - name: GALILEO_RUNNERS_SVC_NAME
-              value: "galileo-runners.galileo.svc.cluster.local"
+              value: "runners.{{ $.Release.Namespace }}.svc.cluster.local"
             - name: GALILEO_RUNNERS_SVC_PORT
               value: "50052"
             - name: GALILEO_API_SECRET_KEY
@@ -87,11 +88,11 @@ spec:
                   name: api-secret
                   key: GALILEO_API_SECRET_KEY
             - name: GALILEO_MINIO_ENDPOINT_URL
-              value: "http://galileo-minio.galileo.svc.cluster.local:9000"
+              value: "http://minio.{{ $.Release.Namespace }}.svc.cluster.local:9000"
             - name: GALILEO_MINIO_K8S_SVC_ADDR
-              value: "http://galileo-minio.galileo.svc.cluster.local:9000"
+              value: "http://minio.{{ $.Release.Namespace }}.svc.cluster.local:9000"
             - name: GALILEO_MINIO_FQDN
-              value: "galileo-minio.galileo.svc.cluster.local:9000"
+              value: "minio.{{ $.Release.Namespace }}.svc.cluster.local:9000"
             - name: GALILEO_MINIO_REGION
               value: "us-east-1"
             - name: GALILEO_MINIO_ACCESS_KEY

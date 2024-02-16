@@ -42,7 +42,7 @@ spec:
               protocol: TCP
           env:
             - name: GALILEO_HEADLESS_API_SVC_DNS
-              value: "api-hs.galileo.svc.cluster.local"
+              value: "api-hs.{{ .Release.Namespace }}.svc.cluster.local"
             - name: GALILEO_API_SVC_PORT
               value: "8088"
             - name: GALILEO_API_SECRET_KEY
