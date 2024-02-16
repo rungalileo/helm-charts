@@ -93,8 +93,7 @@ volumeMounts: []
 #   mountPath: "/etc/foo"
 #   readOnly: true
 
-nodeSelector:
-  galileo-node-type: galileo-core
+nodeSelector: {}
 
 tolerations: []
 
