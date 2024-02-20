@@ -33,6 +33,7 @@ dependencies:
   - name: model-server
     version: "0.1.0"
     repository: "file://../model-server"
+    condition: model-server.enabled
   - name: runners
     version: "0.1.0"
     repository: "file://../runners"
