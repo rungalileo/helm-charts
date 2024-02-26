@@ -5,10 +5,8 @@
 replicaCount: 1
 
 image:
-  repository: gcr.io/rungalileo-dev/model-server
+  repository: gcr.io/rungalileo-prod/model-server
   pullPolicy: IfNotPresent
-  # Overrides the image tag whose default is the chart appVersion.
-  tag: latest
 
 imagePullSecrets:
   - name: galileo-docker-registry-secret
