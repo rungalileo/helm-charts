@@ -115,7 +115,7 @@ postgres:
     host: "postgres-rw.galileo.svc.cluster.local"
     port: 5432
   read:
-    host: "postgres-rw.galileo.svc.cluster.local"
+    host: "postgres-r.galileo.svc.cluster.local"
     port: 5432
   clusterName: "postgres"
   instances: 2
