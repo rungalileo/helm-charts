@@ -1,0 +1,86 @@
+# API configuration
+api:
+  cloud:
+    vendor: "s3"
+    region: "us-east-2"
+    endpointURL: "https://s3.amazonaws.com"
+  postgres:
+    write:
+      host: "postgres.c2k7aajpjf0n.us-east-2.rds.amazonaws.com"
+      port: 5432
+    read:
+      host: "postgres.c2k7aajpjf0n.us-east-2.rds.amazonaws.com"
+      port: 5432
+  env:
+    GALILEO_CONSOLE_URL: "https://console.helm-test.rungalileo.io"
+    GALILEO_ROOT_BUCKET_NAME: "galileo-helm-test-project-runs"
+    GALILEO_ROOT_BUCKET_NAME_RESULTS: "galileo-helm-test-project-runs-results"
+    GALILEO_IMAGES_BUCKET_NAME: "galileo-helm-test-images"
+    GALILEO_PROMPTS_BUCKET_NAME: "galileo-helm-test-prompts"
+    GALILEO_PROMPTS_DATASETS_BUCKET_NAME: "galileo-helm-test-prompts-datasets"
+    GALILEO_PROMPTS_RESULTS_BUCKET_NAME: "galileo-helm-test-prompts-results"
+    GALILEO_MODELS_BUCKET_NAME: "galileo-helm-test-models"
+    GALILEO_AUTO_DATASETS_BUCKET_NAME: "galileo-helm-test-auto-datasets"
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: "alb"
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.name: galileo
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:818240400754:certificate/8708a742-58cf-4159-b77b-fb3430f7619a
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    hosts:
+      - host: api.helm-test.rungalileo.io
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+          - api.helm-test.rungalileo.io
+        secretName: api-tls
+
+runners:
+  cloud:
+    vendor: "s3"
+    region: "us-east-2"
+    endpointURL: "https://s3.amazonaws.com"
+  env:
+    GALILEO_ROOT_BUCKET_NAME: "galileo-helm-test-project-runs"
+    GALILEO_ROOT_BUCKET_NAME_RESULTS: "galileo-helm-test-project-runs-results"
+    GALILEO_IMAGES_BUCKET_NAME: "galileo-helm-test-images"
+    GALILEO_PROMPTS_BUCKET_NAME: "galileo-helm-test-prompts"
+    GALILEO_PROMPTS_DATASETS_BUCKET_NAME: "galileo-helm-test-prompts-datasets"
+    GALILEO_PROMPTS_RESULTS_BUCKET_NAME: "galileo-helm-test-prompts-results"
+    GALILEO_MODELS_BUCKET_NAME: "galileo-helm-test-models"
+    GALILEO_AUTO_DATASETS_BUCKET_NAME: "galileo-helm-test-auto-datasets"
+
+# UI configuration
+ui:
+  env:
+    NEXT_PUBLIC_API_URL: "http://api.helm-test.rungalileo.io"
+    NEXTAUTH_URL: "http://console.helm-test.rungalileo.io"
+  ingress:
+    annotations:
+      kubernetes.io/ingress.class: "alb"
+      alb.ingress.kubernetes.io/scheme: internet-facing
+      alb.ingress.kubernetes.io/target-type: ip
+      alb.ingress.kubernetes.io/group.name: galileo
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:818240400754:certificate/fa38169e-5e36-4838-a657-af78c06c81c0
+      alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
+    hosts:
+      - host: console.helm-test.rungalileo.io
+        paths:
+          - path: /
+            pathType: Prefix
+    tls:
+      - hosts:
+          - console.helm-test.rungalileo.io
+        secretName: ui-tls
+
+# CloudNative PG configuration: https://github.com/cloudnative-pg/charts/blob/main/charts/cloudnative-pg/values.yaml
+cloudnative-pg:
+  enabled: false
+
+# MinIO configuration: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
+minio:
+  enabled: false

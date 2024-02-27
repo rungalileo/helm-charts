@@ -87,14 +87,14 @@ spec:
                 secretKeyRef:
                   name: api-secret
                   key: GALILEO_API_SECRET_KEY
-            - name: GALILEO_MINIO_ENDPOINT_URL
-              value: "http://minio.{{ $.Release.Namespace }}.svc.cluster.local:9000"
-            - name: GALILEO_MINIO_K8S_SVC_ADDR
-              value: "http://minio.{{ $.Release.Namespace }}.svc.cluster.local:9000"
-            - name: GALILEO_MINIO_FQDN
-              value: "minio.{{ $.Release.Namespace }}.svc.cluster.local:9000"
             - name: GALILEO_MINIO_REGION
-              value: "us-east-1"
+              value: {{ $.Values.cloud.region }}
+            - name: GALILEO_MINIO_FQDN
+              value: {{ if eq $.Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq $.Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ $.Values.cloud.endpointURL | trimSuffix ":9000" }}{{ end }}
+            - name: GALILEO_MINIO_ENDPOINT_URL
+              value: {{ $.Values.cloud.endpointURL }}
+            - name: GALILEO_MINIO_K8S_SVC_ADDR
+              value: {{ $.Values.cloud.endpointURL }}
             - name: GALILEO_MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -105,6 +105,12 @@ spec:
                 secretKeyRef:
                   name: minio-secret
                   key: rootPassword
+            {{- with $.Values.env }}
+            {{- range $key, $value := . }}
+            - name: {{ $key }}
+              value: {{ $value | quote }}
+            {{- end }}
+            {{- end }}
           livenessProbe:
             exec:
               command:

@@ -41,12 +41,12 @@ spec:
             - "-c"
             - |
               set -ex
-              echo "Checking readiness of primary Postgres..."
-              while ! pg_isready -h postgres-rw.{{ .Release.Namespace }}.svc.cluster.local; do
-                echo "postgres-rw is not ready yet, sleeping for 10 seconds..."
+              echo "Checking readiness of primary Postgres DB..."
+              while ! pg_isready -h {{.Values.postgres.write.host}}; do
+                echo "Postgres DB is not ready yet, sleeping for 10 seconds..."
                 sleep 10
               done
-              echo "postgres-rw is ready."
+              echo "Postgres DB is ready."
 
               echo "Checking readiness of Minio client..."
               while [ $(curl -sw '%{http_code}' "http://minio-client.{{ .Release.Namespace }}.svc.cluster.local:9000/minio/health/ready" -o /dev/null) -ne 200 ]; do
@@ -84,17 +84,17 @@ spec:
                   name: postgres-app
                   key: password
             - name: GALILEO_DATABASE_URL_WRITE
-              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@postgres-rw.{{ .Release.Namespace }}.svc.cluster.local:5432/$(GALILEO_DATABASE_NAME)"
+              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@{{.Values.postgres.write.host}}:{{.Values.postgres.write.port}}/$(GALILEO_DATABASE_NAME)"
             - name: GALILEO_DATABASE_URL_READ
-              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@postgres-rw.{{ .Release.Namespace }}.svc.cluster.local:5432/$(GALILEO_DATABASE_NAME)"
-            - name: GALILEO_MINIO_ENDPOINT_URL
-              value: "http://minio.{{ .Release.Namespace }}.svc.cluster.local:9000"
-            - name: GALILEO_MINIO_K8S_SVC_ADDR
-              value: "http://minio.{{ .Release.Namespace }}.svc.cluster.local:9000"
-            - name: GALILEO_MINIO_FQDN
-              value: "minio.{{ .Release.Namespace }}.svc.cluster.local:9000"
+              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@{{.Values.postgres.read.host}}:{{.Values.postgres.read.port}}/$(GALILEO_DATABASE_NAME)"
             - name: GALILEO_MINIO_REGION
-              value: "us-east-1"
+              value: {{ .Values.cloud.region }}
+            - name: GALILEO_MINIO_FQDN
+              value: {{ if eq .Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq .Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ .Values.cloud.endpointURL | trimSuffix ":9000" }}{{ end }}
+            - name: GALILEO_MINIO_ENDPOINT_URL
+              value: {{ .Values.cloud.endpointURL }}
+            - name: GALILEO_MINIO_K8S_SVC_ADDR
+              value: {{ .Values.cloud.endpointURL }}
             - name: GALILEO_MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -157,17 +157,19 @@ spec:
                   name: postgres-app
                   key: password
             - name: GALILEO_DATABASE_URL_WRITE
-              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@postgres-rw.{{ .Release.Namespace }}.svc.cluster.local:5432/$(GALILEO_DATABASE_NAME)"
+              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@{{.Values.postgres.write.host}}:{{.Values.postgres.write.port}}/$(GALILEO_DATABASE_NAME)"
             - name: GALILEO_DATABASE_URL_READ
-              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@postgres-rw.{{ .Release.Namespace }}.svc.cluster.local:5432/$(GALILEO_DATABASE_NAME)"
-            - name: GALILEO_MINIO_ENDPOINT_URL
-              value: "http://minio.{{ .Release.Namespace }}.svc.cluster.local:9000"
-            - name: GALILEO_MINIO_K8S_SVC_ADDR
-              value: "http://minio.{{ .Release.Namespace }}.svc.cluster.local:9000"
-            - name: GALILEO_MINIO_FQDN
-              value: "minio.{{ .Release.Namespace }}.svc.cluster.local:9000"
+              value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@{{.Values.postgres.read.host}}:{{.Values.postgres.read.port}}/$(GALILEO_DATABASE_NAME)"
+            # - name: CLOUD_VENDOR_OBJECTSTORE
+            #   value: {{ .Values.cloud.vendor }}
             - name: GALILEO_MINIO_REGION
-              value: "us-east-1"
+              value: {{ .Values.cloud.region }}
+            - name: GALILEO_MINIO_FQDN
+              value: {{ if eq .Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq .Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ .Values.cloud.endpointURL | trimSuffix ":9000" }}{{ end }}
+            - name: GALILEO_MINIO_ENDPOINT_URL
+              value: {{ .Values.cloud.endpointURL }}
+            - name: GALILEO_MINIO_K8S_SVC_ADDR
+              value: {{ .Values.cloud.endpointURL }}
             - name: GALILEO_MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:

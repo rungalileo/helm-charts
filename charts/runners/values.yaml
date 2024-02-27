@@ -117,45 +117,7 @@ tolerations: []
 
 affinity: {}
 
-# MinIO configuration: https://github.com/minio/minio/blob/master/helm/minio/values.yaml
-minio:
-  replicas: 2 # 2 is the minimum
-  resources:
-  requests:
-    memory: 1Gi
-  buckets:
-    - name: galileo-auto-datasets
-      policy: none
-      purge: false
-      versioning: false
-      objectlocking: false
-    - name: galileo-images
-      policy: none
-      purge: false
-      versioning: false
-      objectlocking: false
-    - name: galileo-models
-      policy: none
-      purge: false
-      versioning: false
-      objectlocking: false
-    - name: galileo-project-runs
-      policy: none
-      purge: false
-      versioning: false
-      objectlocking: false
-    - name: galileo-project-runs-results
-      policy: none
-      purge: false
-      versioning: false
-      objectlocking: false
-    - name: galileo-prompts-datasets
-      policy: none
-      purge: false
-      versioning: false
-      objectlocking: false
-    - name: galileo-prompts-results
-      policy: none
-      purge: false
-      versioning: false
-      objectlocking: false
+cloud:
+  vendor: "minio"  # default to minio, can be overridden to s3, gs, exoscale, etc.
+  region: "us-east-1"
+  endpointURL: "http://minio.galileo.svc.cluster.local:9000"
