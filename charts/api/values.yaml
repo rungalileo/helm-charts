@@ -108,7 +108,7 @@ env: {}
 cloud:
   vendor: "minio"  # default to minio, can be overridden to s3, gs, exoscale, etc.
   region: "us-east-1"
-  endpointURL: "http://minio.galileo.svc.cluster.local:9000"
+  endpointURL: "minio.galileo.svc.cluster.local:9000"
 
 postgres:
   write:

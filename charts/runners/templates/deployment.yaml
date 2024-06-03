@@ -87,10 +87,12 @@ spec:
                 secretKeyRef:
                   name: api-secret
                   key: GALILEO_API_SECRET_KEY
+            - name: CLOUD_VENDOR_OBJECTSTORE
+              value: {{ $.Values.cloud.vendor }}
             - name: GALILEO_MINIO_REGION
               value: {{ $.Values.cloud.region }}
             - name: GALILEO_MINIO_FQDN
-              value: {{ if eq $.Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq $.Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ $.Values.cloud.endpointURL | trimSuffix ":9000" }}{{ end }}
+              value: {{ if eq $.Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq $.Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ $.Values.cloud.endpointURL }}{{ end }}
             - name: GALILEO_MINIO_ENDPOINT_URL
               value: {{ $.Values.cloud.endpointURL }}
             - name: GALILEO_MINIO_K8S_SVC_ADDR

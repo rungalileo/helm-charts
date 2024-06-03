@@ -96,3 +96,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+env:
+  - name: HF_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: wizard-secret
+        key: HF_TOKEN
