@@ -41,6 +41,8 @@ spec:
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           env:
+            - name: GALILEO_CUSTOMER_NAME
+              value: "{{ required ".Values.customer_name must be set" .Values.customer_name }}"
             - name: GALILEO_APP
               value: wizard
             {{- range .Values.env }}

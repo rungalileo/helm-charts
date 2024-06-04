@@ -18,6 +18,8 @@ spec:
     additionalConfig: |
       # https://www.rabbitmq.com/prometheus.html#metric-aggregation
       prometheus.return_per_object_metrics = true
+      # We set it to 24 hours here, which is much higher than timeout of any of our tasks.
+      consumer_timeout = 86400000
     additionalPlugins:
       - rabbitmq_shovel
       - rabbitmq_shovel_management

@@ -36,6 +36,13 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # Initialize the Celery service with `bash -c` to ensure that the command is executed in a shell.
+          # This is necessary to ensure that the process receives the control signals sent by Kubernetes for
+          # graceful termination.
+          command:
+            - "bash"
+            - "-c"
+            - 'poetry run celery --app=comet.celery_app.celery_app worker --beat --loglevel="INFO" --queues=comet-health,comet-monitor-alerts'
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
