@@ -8,7 +8,7 @@ api:
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/group.name: galileo
-      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:818240400754:certificate/8708a742-58cf-4159-b77b-fb3430f7619a
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:818240400754:certificate/e8c03c5e-f708-4bce-92c3-c12b53e8ef62
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     hosts:
       - host: api.helm-test.rungalileo.io
@@ -23,15 +23,15 @@ api:
 # UI configuration
 ui:
   env:
-    NEXT_PUBLIC_API_URL: "http://api.helm-test.rungalileo.io"
-    NEXTAUTH_URL: "http://console.helm-test.rungalileo.io"
+    NEXT_PUBLIC_API_URL: "https://api.helm-test.rungalileo.io"
+    NEXTAUTH_URL: "https://console.helm-test.rungalileo.io"
   ingress:
     annotations:
       kubernetes.io/ingress.class: "alb"
       alb.ingress.kubernetes.io/scheme: internet-facing
       alb.ingress.kubernetes.io/target-type: ip
       alb.ingress.kubernetes.io/group.name: galileo
-      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-2:818240400754:certificate/fa38169e-5e36-4838-a657-af78c06c81c0
+      alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-west-2:818240400754:certificate/83e86b83-6f15-4fc8-851c-420b19d34ff5
       alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS": 443}]'
     hosts:
       - host: console.helm-test.rungalileo.io

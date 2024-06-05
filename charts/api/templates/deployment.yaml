@@ -37,7 +37,7 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           command:
-            - bash
+            - "bash"
             - "-c"
             - |
               set -ex
@@ -59,7 +59,10 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
-          args: ["alembic", "upgrade", "head"]
+          command:
+            - "bash"
+            - "-c"
+            - "poetry run alembic upgrade head"
           env:
             - name: GALILEO_APP
               value: api
@@ -90,11 +93,11 @@ spec:
             - name: GALILEO_MINIO_REGION
               value: {{ .Values.cloud.region }}
             - name: GALILEO_MINIO_FQDN
-              value: {{ if eq .Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq .Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ .Values.cloud.endpointURL | trimSuffix ":9000" }}{{ end }}
+              value: {{ if eq .Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq .Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ .Values.cloud.endpointURL }}{{ end }}
             - name: GALILEO_MINIO_ENDPOINT_URL
-              value: {{ .Values.cloud.endpointURL }}
+              value: "http://{{ .Values.cloud.endpointURL }}"
             - name: GALILEO_MINIO_K8S_SVC_ADDR
-              value: {{ .Values.cloud.endpointURL }}
+              value: "http://{{ .Values.cloud.endpointURL }}"
             - name: GALILEO_MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:
@@ -117,6 +120,13 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # Initialize the Celery service with `bash -c` to ensure that the command is executed in a shell.
+          # This is necessary to ensure that the process receives the control signals sent by Kubernetes for
+          # graceful termination.
+          command:
+            - "bash"
+            - "-c"
+            - "poetry run opentelemetry-instrument gunicorn api.main:api -c api/gunicorn_config.py"
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
@@ -160,16 +170,16 @@ spec:
               value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@{{.Values.postgres.write.host}}:{{.Values.postgres.write.port}}/$(GALILEO_DATABASE_NAME)"
             - name: GALILEO_DATABASE_URL_READ
               value: "postgresql://$(GALILEO_DATABASE_USER):$(GALILEO_DATABASE_PASSWORD)@{{.Values.postgres.read.host}}:{{.Values.postgres.read.port}}/$(GALILEO_DATABASE_NAME)"
-            # - name: CLOUD_VENDOR_OBJECTSTORE
-            #   value: {{ .Values.cloud.vendor }}
+            - name: CLOUD_VENDOR_OBJECTSTORE
+              value: {{ .Values.cloud.vendor }}
             - name: GALILEO_MINIO_REGION
               value: {{ .Values.cloud.region }}
             - name: GALILEO_MINIO_FQDN
-              value: {{ if eq .Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq .Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ .Values.cloud.endpointURL | trimSuffix ":9000" }}{{ end }}
+              value: {{ if eq .Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq .Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ .Values.cloud.endpointURL }}{{ end }}
             - name: GALILEO_MINIO_ENDPOINT_URL
-              value: {{ .Values.cloud.endpointURL }}
+              value: "http://{{ .Values.cloud.endpointURL }}"
             - name: GALILEO_MINIO_K8S_SVC_ADDR
-              value: {{ .Values.cloud.endpointURL }}
+              value: "http://{{ .Values.cloud.endpointURL }}"
             - name: GALILEO_MINIO_ACCESS_KEY
               valueFrom:
                 secretKeyRef:

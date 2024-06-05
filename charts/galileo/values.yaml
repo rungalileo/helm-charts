@@ -35,8 +35,8 @@ runners:
   nodeSelector: {}
 
 # Wizard configuration
-model-server:
-  enabled: false
+wizard:
+  enabled: true
   nodeSelector: {}
   fullnameOverride: "wizard"
 

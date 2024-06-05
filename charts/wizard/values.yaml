@@ -1,11 +1,13 @@
-# Default values for model-server.
+# Default values for wizard.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
+
+customer_name: "default"
 
 replicaCount: 1
 
 image:
-  repository: gcr.io/rungalileo-prod/model-server
+  repository: gcr.io/rungalileo-prod/wizard
   pullPolicy: IfNotPresent
 
 imagePullSecrets:
@@ -96,3 +98,10 @@ nodeSelector: {}
 tolerations: []
 
 affinity: {}
+
+env:
+  - name: HF_TOKEN
+    valueFrom:
+      secretKeyRef:
+        name: wizard-secret
+        key: HF_TOKEN

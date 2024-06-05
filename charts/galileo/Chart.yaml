@@ -15,24 +15,24 @@ type: application
 # This is the chart version. This version number should be incremented each time you make changes
 # to the chart and its templates, including the app version.
 # Versions are expected to follow Semantic Versioning (https://semver.org/)
-version: 0.1.0
+version: 0.3.0
 
 dependencies:
   - name: api
-    version: "0.1.0"
+    version: "0.4.0"
     repository: "file://../api"
   - name: comet
-    version: "0.1.0"
+    version: "0.3.0"
     repository: "file://../comet"
-  - name: model-server
-    version: "0.1.0"
-    repository: "file://../model-server"
-    condition: model-server.enabled
+  - name: wizard
+    version: "0.3.0"
+    repository: "file://../wizard"
+    condition: wizard.enabled
   - name: runners
-    version: "0.1.0"
+    version: "0.4.0"
     repository: "file://../runners"
   - name: ui
-    version: "0.1.0"
+    version: "0.4.0"
     repository: "file://../ui"
   - name: cert-manager
     version: "1.13.3"

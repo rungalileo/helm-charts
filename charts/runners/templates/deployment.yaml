@@ -41,8 +41,8 @@ spec:
             {{- toYaml $.Values.securityContext | nindent 12 }}
           image: "{{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}"
           command:
-            - "/bin/sh"
-            - "-ec"
+            - "bash"
+            - "-c"
             - 'poetry run celery --app=runners.celery_app.celery_app worker --loglevel="INFO" --concurrency=$CONCURRENCY --queues=$QUEUES'
           imagePullPolicy: {{ $.Values.image.pullPolicy }}
           ports:
@@ -82,15 +82,21 @@ spec:
               value: "runners.{{ $.Release.Namespace }}.svc.cluster.local"
             - name: GALILEO_RUNNERS_SVC_PORT
               value: "50052"
+            - name: GALILEO_WIZARD_SVC_NAME
+              value: "wizard.{{ $.Values.galileo_namespace }}.svc.cluster.local"
+            - name: GALILEO_WIZARD_SVC_PORT
+              value: "8000"
             - name: GALILEO_API_SECRET_KEY
               valueFrom:
                 secretKeyRef:
                   name: api-secret
                   key: GALILEO_API_SECRET_KEY
+            - name: CLOUD_VENDOR_OBJECTSTORE
+              value: {{ $.Values.cloud.vendor }}
             - name: GALILEO_MINIO_REGION
               value: {{ $.Values.cloud.region }}
             - name: GALILEO_MINIO_FQDN
-              value: {{ if eq $.Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq $.Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ $.Values.cloud.endpointURL | trimSuffix ":9000" }}{{ end }}
+              value: {{ if eq $.Values.cloud.vendor "s3" }}"s3.amazonaws.com"{{ else if eq $.Values.cloud.vendor "gs" }}"storage.googleapis.com"{{ else }}{{ $.Values.cloud.endpointURL }}{{ end }}
             - name: GALILEO_MINIO_ENDPOINT_URL
               value: {{ $.Values.cloud.endpointURL }}
             - name: GALILEO_MINIO_K8S_SVC_ADDR
@@ -114,9 +120,9 @@ spec:
           livenessProbe:
             exec:
               command:
-              - /bin/sh
-              - -c
-              - poetry run celery --app=runners.celery_app.celery_app inspect ping
+              - "bash"
+              - "-c"
+              - "poetry run celery --app=runners.celery_app.celery_app inspect ping"
             initialDelaySeconds: 120
             periodSeconds: 60
             timeoutSeconds: 60

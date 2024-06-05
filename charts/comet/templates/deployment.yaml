@@ -36,13 +36,20 @@ spec:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          # Initialize the Celery service with `bash -c` to ensure that the command is executed in a shell.
+          # This is necessary to ensure that the process receives the control signals sent by Kubernetes for
+          # graceful termination.
+          command:
+            - "bash"
+            - "-c"
+            - 'poetry run celery --app=comet.celery_app.celery_app worker --beat --loglevel="INFO" --queues=comet-health,comet-monitor-alerts'
           ports:
             - name: http
               containerPort: {{ .Values.service.port }}
               protocol: TCP
           env:
-            - name: GALILEO_HEADLESS_API_SVC_DNS
-              value: "api-hs.{{ .Release.Namespace }}.svc.cluster.local"
+            - name: GALILEO_API_SVC_NAME
+              value: "api.{{ .Release.Namespace }}.svc.cluster.local"
             - name: GALILEO_API_SVC_PORT
               value: "8088"
             - name: GALILEO_API_SECRET_KEY
@@ -50,16 +57,29 @@ spec:
                 secretKeyRef:
                   name: api-secret
                   key: GALILEO_API_SECRET_KEY
-          readinessProbe:
-            tcpSocket:
-              port: 26638
-            initialDelaySeconds: 15
-            periodSeconds: 20
+            - name: GALILEO_RABBITMQ_HOST
+              value: "rabbitmq-cluster.{{ .Release.Namespace }}.svc.cluster.local"
+            - name: GALILEO_RABBITMQ_PORT
+              value: "5672"
+            - name: GALILEO_RABBITMQ_USERNAME
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: username
+            - name: GALILEO_RABBITMQ_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: rabbitmq-cluster-default-user
+                  key: password
           livenessProbe:
-            tcpSocket:
-              port: 26638
-            initialDelaySeconds: 15
-            periodSeconds: 20
+            exec:
+              command:
+              - /bin/sh
+              - -c
+              - poetry run celery --app=comet.celery_app.celery_app inspect ping
+            initialDelaySeconds: 120
+            periodSeconds: 300
+            timeoutSeconds: 300
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
           {{- with .Values.volumeMounts }}
