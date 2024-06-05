@@ -26,5 +26,8 @@ dependencies:
 - name: rabbitmq-cluster-operator
   repository: https://charts.bitnami.com/bitnami
   version: 3.15.4
-digest: sha256:90fe7ed91004c77122a9557724a5340976828795aba60c7788d0778a6f556f87
-generated: "2024-06-04T14:11:13.701253-05:00"
+- name: clickhouse
+  repository: https://charts.bitnami.com/bitnami
+  version: 6.2.3
+digest: sha256:ed80e29a585cbbd1a87f5530a446b8b7a1a3d4c36887e375b1c05ef782fcf178
+generated: "2024-06-05T14:54:50.201515-05:00"
