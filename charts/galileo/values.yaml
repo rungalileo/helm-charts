@@ -170,3 +170,8 @@ rabbitmq-cluster-operator:
       requests:
         cpu: 100m
         memory: 128Mi
+
+# Clickhouse configuration: https://github.com/bitnami/charts/blob/main/bitnami/clickhouse/values.yaml
+clickhouse:
+  enabled: true
+  fullnameOverride: "clickhouse"
