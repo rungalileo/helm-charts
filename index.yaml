@@ -64,6 +64,51 @@ entries:
     version: 0.1.0
   galileo:
   - apiVersion: v2
+    created: "2024-06-05T20:45:46.229083357Z"
+    dependencies:
+    - name: api
+      repository: file://../api
+      version: 0.4.0
+    - name: comet
+      repository: file://../comet
+      version: 0.3.0
+    - condition: wizard.enabled
+      name: wizard
+      repository: file://../wizard
+      version: 0.3.0
+    - name: runners
+      repository: file://../runners
+      version: 0.4.0
+    - name: ui
+      repository: file://../ui
+      version: 0.4.0
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.13.3
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 5.0.15
+    - condition: cloudnative-pg.enabled
+      name: cloudnative-pg
+      repository: https://cloudnative-pg.github.io/charts
+      version: 0.20.0
+    - name: rabbitmq-cluster-operator
+      repository: https://charts.bitnami.com/bitnami
+      version: 3.15.4
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: https://charts.bitnami.com/bitnami
+      version: 6.2.3
+    description: A Helm chart for Kubernetes
+    digest: 187ff3d05eab34d0b7a150035c5718deb6e8fdbb67544a6ad35e0b86a29ca438
+    name: galileo
+    type: application
+    urls:
+    - https://github.com/rungalileo/helm-charts/releases/download/galileo-0.4.0/galileo-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
     created: "2024-06-05T14:35:20.669350586Z"
     dependencies:
     - name: api
@@ -278,4 +323,4 @@ entries:
     urls:
     - https://github.com/rungalileo/helm-charts/releases/download/wizard-0.2.0/wizard-0.2.0.tgz
     version: 0.2.0
-generated: "2024-06-05T14:35:21.056896703Z"
+generated: "2024-06-05T20:45:46.229144952Z"
