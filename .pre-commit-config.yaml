@@ -1,6 +1,6 @@
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.5.0
+    rev: v4.6.0
     hooks:
       - id: check-added-large-files
       - id: check-ast
@@ -12,6 +12,14 @@ repos:
       - id: end-of-file-fixer
       - id: trailing-whitespace
   - repo: https://github.com/zricethezav/gitleaks
-    rev: v8.17.0
+    rev: v8.18.3
     hooks:
       - id: gitleaks
+  - repo: local
+    hooks:
+      - id: lint-all-helm-charts
+        name: Lint all Helm charts
+        entry: scripts/lint_all_helm_charts.sh
+        language: script
+        always_run: true
+        pass_filenames: false
