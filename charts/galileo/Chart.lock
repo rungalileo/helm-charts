@@ -29,5 +29,8 @@ dependencies:
 - name: clickhouse
   repository: https://charts.bitnami.com/bitnami
   version: 6.2.3
-digest: sha256:ccd2f2877d407019bd9dc1e7a1b604400eca2e9bbe5da180350373e086ef2d20
-generated: "2024-06-06T10:36:12.192785-05:00"
+- name: prometheus
+  repository: https://prometheus-community.github.io/helm-charts
+  version: 25.21.0
+digest: sha256:665a522a786c984e5171f3b100c6440ff8b0ba7d294b89ea57ebec886b450d5c
+generated: "2024-06-07T11:11:06.091803-05:00"
