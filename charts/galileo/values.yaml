@@ -175,3 +175,63 @@ rabbitmq-cluster-operator:
 clickhouse:
   enabled: true
   fullnameOverride: "clickhouse"
+  zookeeper:
+    fullnameOverride: "zookeeper"
+
+# Prometheus configuration: https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus/values.yaml
+prometheus:
+  enabled: true
+  replicaCount: 2
+  serviceAccount:
+    create: false
+    name: galileo
+  alertmanager:
+    enabled: true
+  prometheusSpec:
+    additionalScrapeConfigs:
+      - job_name: 'kubernetes-pods'
+        scrape_interval: 2m
+        kubernetes_sd_configs:
+          - role: pod
+        relabel_configs:
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_scrape]
+            action: keep
+            regex: true
+          - source_labels: [__meta_kubernetes_pod_annotation_prometheus_io_path]
+            action: replace
+            target_label: __metrics_path__
+            regex: (.+)
+          - source_labels: [__address__, __meta_kubernetes_pod_annotation_prometheus_io_port]
+            action: replace
+            regex: ([^:]+)(?::\d+)?;(\d+)
+            replacement: $1:$2
+            target_label: __address__
+          - action: labelmap
+            regex: __meta_kubernetes_pod_label_(.+)
+          - source_labels: [__meta_kubernetes_namespace]
+            action: replace
+            target_label: kubernetes_namespace
+          - source_labels: [__meta_kubernetes_pod_name]
+            action: replace
+            target_label: kubernetes_pod_name
+    remoteWrite:
+      - url: https://prometheus-prod-36-prod-us-west-0.grafana.net/api/prom/push
+        basic_auth:
+          username: ""
+          password: ""
+        write_relabel_configs:
+          - source_labels: [__name__]
+            regex: '^(api_|galileo_|job_|rabbitmq_queue_|nv_inference_|nv_gpu_|nv_cpu_).*'
+            action: keep
+          - source_labels: [queue]
+            regex: '^(health|fast|normal|slow|$)'
+            action: keep
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          accessModes: ["ReadWriteOnce"]
+          resources:
+            requests:
+              storage: 50Gi
+  kubeStateMetrics:
+    enabled: true
