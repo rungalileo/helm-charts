@@ -402,3 +402,51 @@ prometheus:
               storage: 50Gi
   kubeStateMetrics:
     enabled: true
+
+# Prometheus Adapter configuration: https://github.com/prometheus-community/helm-charts/blob/main/charts/prometheus-adapter/values.yaml
+prometheus-adapter:
+  enabled: true
+  fullnameOverride: "prometheus-adapter"
+  rules:
+    default: false
+    custom:
+      - seriesQuery: 'rabbitmq_queue_messages{namespace!="",service!=""}'
+        resources:
+          overrides:
+            namespace:
+              resource: "namespace"
+            service:
+              resource: "service"
+        name:
+          as: "fast_queue_job_consumer_ratio"
+        metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>,queue="fast"}) by (<<.GroupBy>>) / sum(rabbitmq_queue_consumers{<<.LabelMatchers>>,queue="fast"}+0.01) by (<<.GroupBy>>)
+      - seriesQuery: 'rabbitmq_queue_messages{namespace!="",service!=""}'
+        resources:
+          overrides:
+            namespace:
+              resource: "namespace"
+            service:
+              resource: "service"
+        name:
+          as: "normal_queue_job_consumer_ratio"
+        metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>,queue="normal"}) by (<<.GroupBy>>) / sum(rabbitmq_queue_consumers{<<.LabelMatchers>>,queue="normal"}+0.01) by (<<.GroupBy>>)
+      - seriesQuery: 'rabbitmq_queue_messages{namespace!="",service!=""}'
+        resources:
+          overrides:
+            namespace:
+              resource: "namespace"
+            service:
+              resource: "service"
+        name:
+          as: "slow_queue_job_consumer_ratio"
+        metricsQuery: sum(<<.Series>>{<<.LabelMatchers>>,queue="slow"}) by (<<.GroupBy>>) / sum(rabbitmq_queue_consumers{<<.LabelMatchers>>,queue="slow"}+0.01) by (<<.GroupBy>>)
+  resources:
+    limits:
+      cpu: 50m
+      memory: 128Mi
+    requests:
+      cpu: 50m
+      memory: 128Mi
+  serviceAccount:
+    create: true
+    name: "prometheus-adapter"
