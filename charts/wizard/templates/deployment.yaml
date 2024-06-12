@@ -38,7 +38,13 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           ports:
             - name: http
-              containerPort: {{ .Values.service.port }}
+              containerPort: 8000
+              protocol: TCP
+            - name: grpc
+              containerPort: 8001
+              protocol: TCP
+            - name: metrics
+              containerPort: 8002
               protocol: TCP
           env:
             - name: GALILEO_CUSTOMER_NAME
