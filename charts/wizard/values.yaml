@@ -3,8 +3,8 @@
 # Declare variables to be passed into your templates.
 
 customer_name: "default"
-
 replicaCount: 1
+useGPU: false
 
 image:
   repository: gcr.io/rungalileo-prod/wizard
@@ -27,7 +27,9 @@ serviceAccount:
   # If not set and create is true, a name is generated using the fullname template
   name: ""
 
-podAnnotations: {}
+podAnnotations:
+  prometheus.io/scrape: "true"
+  prometheus.io/port: "8002"
 podLabels: {}
 
 podSecurityContext: {}
@@ -61,22 +63,18 @@ ingress:
   #    hosts:
   #      - chart-example.local
 
-resources: {}
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  # requests:
-  #   cpu: 100m
-  #   memory: 128Mi
+resources:
+  requests:
+    cpu: 6000m
+    memory: 24Gi
+  limits:
+    cpu: 8000m
+    memory: 32Gi
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 1
-  maxReplicas: 100
+  maxReplicas: 30
   targetCPUUtilizationPercentage: 80
   # targetMemoryUtilizationPercentage: 80
 

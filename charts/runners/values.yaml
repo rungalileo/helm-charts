@@ -7,20 +7,29 @@ runnerDeployments:
     queues: "health,fast,normal"
     pool: "processes"
     cpu_request: 1000m
+    cpu_limit: 1500m
     concurrency: 5
-    memory_request: 2Gi
+    memory_request: 3Gi
+    memory_limit: 4Gi
+    hpa_metric_name: "normal_queue_job_consumer_ratio"
   - name: "runners-small"
     queues: "health,fast"
     pool: "processes"
     cpu_request: 512m
+    cpu_limit: 768m
     concurrency: 2
-    memory_request: 1Gi
+    memory_request: 1.5Gi
+    memory_limit: 2Gi
+    hpa_metric_name: "fast_queue_job_consumer_ratio"
   - name: "runners-large"
-    queues: "health,fast,slow"
+    queues: "health,slow"
     pool: "processes"
     concurrency: 2
-    cpu_request: 2000m
-    memory_request: 4Gi
+    cpu_request: 1000m
+    cpu_limit: 1500m
+    memory_request: 6Gi
+    memory_limit: 8Gi
+    hpa_metric_name: "slow_queue_job_consumer_ratio"
 
 replicaCount: 1
 
@@ -92,11 +101,11 @@ resources: {}
   #   memory: 128Mi
 
 autoscaling:
-  enabled: false
+  enabled: true
   minReplicas: 1
-  maxReplicas: 100
-  targetCPUUtilizationPercentage: 80
-  # targetMemoryUtilizationPercentage: 80
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 70
+  targetMemoryUtilizationPercentage: 80
 
 # Additional volumes on the output Deployment definition.
 volumes: []
