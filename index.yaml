@@ -3,6 +3,16 @@ entries:
   api:
   - apiVersion: v2
     appVersion: 1.130.0
+    created: "2024-06-13T15:40:16.779956615Z"
+    description: A Helm chart for Kubernetes
+    digest: 3059d7a75bc06a3024f86067b2723ae79c23057879be3d8c577dc36f7ae3e52c
+    name: api
+    type: application
+    urls:
+    - https://github.com/rungalileo/helm-charts/releases/download/api-0.6.0/api-0.6.0.tgz
+    version: 0.6.0
+  - apiVersion: v2
+    appVersion: 1.130.0
     created: "2024-06-06T15:43:20.411705193Z"
     description: A Helm chart for Kubernetes
     digest: a2f69fbaee578ae3c66e0577f2dd0a98ea729acce9ad0f0af5318e1c788dc311
@@ -73,6 +83,67 @@ entries:
     - https://github.com/rungalileo/helm-charts/releases/download/comet-0.1.0/comet-0.1.0.tgz
     version: 0.1.0
   galileo:
+  - apiVersion: v2
+    created: "2024-06-13T15:40:16.975609084Z"
+    dependencies:
+    - name: api
+      repository: file://../api
+      version: 0.6.0
+    - name: comet
+      repository: file://../comet
+      version: 0.3.0
+    - condition: wizard.enabled
+      name: wizard
+      repository: file://../wizard
+      version: 0.4.0
+    - name: runners
+      repository: file://../runners
+      version: 0.5.0
+    - name: ui
+      repository: file://../ui
+      version: 0.5.0
+    - condition: cert-manager.enabled
+      name: cert-manager
+      repository: https://charts.jetstack.io
+      version: 1.13.3
+    - condition: minio.enabled
+      name: minio
+      repository: https://charts.min.io/
+      version: 5.0.15
+    - condition: cloudnative-pg.enabled
+      name: cloudnative-pg
+      repository: https://cloudnative-pg.github.io/charts
+      version: 0.20.0
+    - name: rabbitmq-cluster-operator
+      repository: https://charts.bitnami.com/bitnami
+      version: 3.15.4
+    - condition: clickhouse.enabled
+      name: clickhouse
+      repository: https://charts.bitnami.com/bitnami
+      version: 6.2.3
+    - condition: metrics-server.enabled
+      name: metrics-server
+      repository: https://kubernetes-sigs.github.io/metrics-server/
+      version: 3.12.1
+    - condition: prometheus.enabled
+      name: prometheus
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 25.21.0
+    - condition: prometheus.enabled
+      name: prometheus-operator-crds
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 12.0.0
+    - condition: prometheus-adapter.enabled
+      name: prometheus-adapter
+      repository: https://prometheus-community.github.io/helm-charts
+      version: 4.10.0
+    description: A Helm chart for Kubernetes
+    digest: 5617b5a347e70445737e385ad952c1cdbc2160bd32f0b7d3167eac83a6de2a7b
+    name: galileo
+    type: application
+    urls:
+    - https://github.com/rungalileo/helm-charts/releases/download/galileo-0.8.0/galileo-0.8.0.tgz
+    version: 0.8.0
   - apiVersion: v2
     created: "2024-06-10T16:50:00.580375802Z"
     dependencies:
@@ -400,6 +471,16 @@ entries:
   runners:
   - apiVersion: v2
     appVersion: 1.83.1
+    created: "2024-06-13T15:40:17.103182412Z"
+    description: A Helm chart for Kubernetes
+    digest: 9d13d0bb2cad8e9894ee71ffcd26dd780314454eaee93e85ad3ff478224cd2ce
+    name: runners
+    type: application
+    urls:
+    - https://github.com/rungalileo/helm-charts/releases/download/runners-0.5.0/runners-0.5.0.tgz
+    version: 0.5.0
+  - apiVersion: v2
+    appVersion: 1.83.1
     created: "2024-06-05T14:35:20.818542284Z"
     description: A Helm chart for Kubernetes
     digest: 7d8ec9d719269378cb1f6b606bf9e619531d6a46a34293bed6e4ed12b4c69cb0
@@ -472,6 +553,16 @@ entries:
   wizard:
   - apiVersion: v2
     appVersion: 0.64.0
+    created: "2024-06-13T15:40:17.240994894Z"
+    description: A Helm chart for Kubernetes
+    digest: 253a87d42ae1b9edd96a99501a09c2f22b591d5da685e065b3f0b83cdbc2b4d6
+    name: wizard
+    type: application
+    urls:
+    - https://github.com/rungalileo/helm-charts/releases/download/wizard-0.4.0/wizard-0.4.0.tgz
+    version: 0.4.0
+  - apiVersion: v2
+    appVersion: 0.64.0
     created: "2024-06-05T14:35:21.056843994Z"
     description: A Helm chart for Kubernetes
     digest: 565dd47c5d395de2492c590d729082f93cb8e705def4ba9a9cf83ef85da718f4
@@ -490,4 +581,4 @@ entries:
     urls:
     - https://github.com/rungalileo/helm-charts/releases/download/wizard-0.2.0/wizard-0.2.0.tgz
     version: 0.2.0
-generated: "2024-06-10T16:50:00.580443709Z"
+generated: "2024-06-13T15:40:17.241100541Z"
